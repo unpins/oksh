@@ -37,5 +37,14 @@ cosmoPkgs.oksh.overrideAttrs (oa: {
                      'defined(__linux__) || defined(__COSMOPOLITAN__) || defined(__CYGWIN__)' \
       --replace-fail '#ifndef O_EXLOCK' \
                      '#if !defined(O_EXLOCK) && !defined(__COSMOPOLITAN__)'
+
+    # Windows command lookup: catalog programs install as `<name>.exe` hardlinks
+    # (cmd.exe/PowerShell find them via PATHEXT), but Cosmopolitan does not append
+    # an executable suffix during path resolution, so a bare `ls` typed at the
+    # oksh prompt never resolves. The patch teaches oksh's PATH search (search())
+    # to retry a candidate with `.exe` when the bare name is missing — mirroring
+    # native Windows shells and keeping a single on-disk name (no `ls` + `ls.exe`
+    # pair). `__COSMOCC__`-guarded, inert on the Linux/macOS static builds.
+    patch -p1 < ${./findcmd-exe-lookup.patch}
   '';
 })

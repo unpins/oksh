@@ -1,0 +1,27 @@
+--- a/exec.c
++++ b/exec.c
+@@ -1014,6 +1014,24 @@
+ 		memcpy(xp, name, namelen);
+ 		if (search_access(Xstring(xs, xp), mode, errnop) == 0)
+ 			return Xclose(xs, xp + namelen);
++#ifdef __COSMOCC__
++		/*
++		 * On Windows/Cosmopolitan, retry once with a ".exe" suffix
++		 * so "ls" resolves "ls.exe" (mirrors cmd/PowerShell PATHEXT).
++		 * The buffer returned here is exactly what the caller hands
++		 * to execve, so the ".exe" candidate must be the result.
++		 */
++		if (errno == ENOENT &&
++		    !(namelen >= 5 &&
++		      strcmp(name + (namelen - 1) - 4, ".exe") == 0)) {
++			/* make room for ".exe" in place of the trailing NUL */
++			XcheckN(xs, xp, namelen + 4);
++			/* overwrite the NUL at xp[namelen - 1] with ".exe\0" */
++			memcpy(xp + (namelen - 1), ".exe", 5);
++			if (search_access(Xstring(xs, xp), mode, errnop) == 0)
++				return Xclose(xs, xp + namelen + 4);
++		}
++#endif
+ 		if (*sp++ == '\0')
+ 			sp = NULL;
+ 	}

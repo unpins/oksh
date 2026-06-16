@@ -73,8 +73,9 @@ The [Releases](https://github.com/unpins/oksh/releases) page has standalone bina
 - **Static linking, every target.** Linux is static-musl on every architecture.
 
 - **Windows via Cosmopolitan.** mingw can't host a Korn shell (no `fork`, job
-  control, or POSIX signals), so the Windows binary is built with `cosmocc` into
-  an APE PE32+. oksh's portability layer (`portable.h`) dispatches on the host
+  control, or POSIX signals), so the Windows binary is built with `cosmocc` and
+  apelinked to a PE32+ `.exe`. oksh's portability layer (`portable.h`)
+  dispatches on the host
   OS and had never heard of Cosmopolitan, so it was falling through to BSD
   fallbacks that reference constants cosmo lacks. Since cosmo's libc is
   deliberately Linux/glibc-shaped, the fix enrolls it in the existing `__linux__`

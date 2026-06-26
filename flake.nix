@@ -38,6 +38,12 @@
     unpins-lib.lib.mkStandaloneFlake {
       inherit self;
       name = "oksh";
+
+      # Build via the unpin-llvm engine + emit a bitcode multicall module.
+      engine = "unpin-llvm";
+      multicall = {
+        programs = [{ name = "oksh"; }];
+      };
       license = "Public Domain";
 
       # oksh has -c; exercise the interpreter and a builtin to confirm argv

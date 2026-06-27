@@ -11,13 +11,11 @@
   # oksh (the portable OpenBSD ksh, based on the Public Domain Korn Shell) as a
   # single self-contained static binary. Like mksh it has no module system, no
   # autoloaded function tree, and uses no NLS catalogs (no catgets segfault) —
-  # but unlike mksh it uses ncurses for terminal handling, so stock
-  # pkgsStatic.oksh reads host /usr/share/terminfo at runtime (and keeps a
-  # /nix/store ref to it). The only delta vs nixpkgs is therefore:
-  #
-  #   - embedFallbackTerminfo on ncurses: bakes a curated terminfo fallback so
-  #     the line editor works with no /usr/share/terminfo on the host (strace
-  #     shows zero /nix/store reads at runtime). Same fix tcsh/dash/nano use.
+  # but unlike mksh it uses ncurses for terminal handling. The curated
+  # fallback-terminfo (so the line editor works with no host /usr/share/terminfo
+  # and keeps no /nix/store ref) is baked centrally into every engine ncurses by
+  # native-overlay/ncurses.nix, so pkgsStatic.ncurses already carries it — no
+  # per-package override here (same for tcsh/dash/nano).
   #
   # The man-page embed and the Windows/Cosmopolitan build are handled by
   # mkStandaloneFlake and cosmo.nix respectively.
@@ -28,12 +26,11 @@
   #   - Windows (Cosmopolitan APE): see cosmo.nix.
   outputs = { self, unpins-lib }:
     let
+      # Fallback terminfo is baked centrally for every engine ncurses, linux +
+      # darwin (native-overlay/ncurses.nix), so p.ncurses already carries it.
       okshBase = pkgs:
-        let
-          p = pkgs.pkgsStatic;
-          ncursesFB = unpins-lib.lib.embedFallbackTerminfo p.ncurses;
-        in
-        p.oksh.override { ncurses = ncursesFB; };
+        let p = pkgs.pkgsStatic;
+        in p.oksh.override { ncurses = p.ncurses; };
     in
     unpins-lib.lib.mkStandaloneFlake {
       inherit self;

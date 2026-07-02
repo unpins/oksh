@@ -23,7 +23,7 @@
   # Targets:
   #   - Linux (static-musl, every arch).
   #   - macOS (Mach-O, libSystem-only).
-  #   - Windows (Cosmopolitan APE): see cosmo.nix.
+  #   - Windows (single PE .exe, built via Cosmopolitan): see cosmo.nix.
   outputs = { self, unpins-lib }:
     let
       # Fallback terminfo is baked centrally for every engine ncurses, linux +
@@ -44,7 +44,7 @@
       license = "Public Domain";
 
       # oksh has -c; exercise the interpreter and a builtin to confirm argv
-      # parsing on every ABI (incl. the cosmo APE).
+      # parsing on every ABI (incl. the cosmo PE).
       smoke = [ "-c" "echo unpins-smoke-ok" ];
       smokePattern = "unpins-smoke-ok";
 

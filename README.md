@@ -79,4 +79,9 @@ The [Releases](https://github.com/unpins/oksh/releases) page has standalone bina
   constants cosmo lacks. Since cosmo's libc is deliberately Linux/glibc-shaped,
   the fix enrolls it in the existing `__linux__` profile (one extra
   `defined(__COSMOPOLITAN__)`), plus a small guard so the `O_EXLOCK` fallback
-  doesn't collide with cosmo's real declaration. See `cosmo.nix`.
+  doesn't collide with cosmo's real declaration. The shipped artifact is a single
+  Windows PE `.exe` (apelinked from the cosmo ELF), never an APE. See `cosmo.nix`.
+
+- **Tests.** oksh ships no test suite of its own (the portable OpenBSD ksh is a
+  minimal build with no `make check` target), so there is nothing to wire; the
+  release smoke test exercises the interpreter and a builtin.

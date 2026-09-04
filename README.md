@@ -65,9 +65,9 @@ The [Releases](https://github.com/unpins/oksh/releases) page has standalone bina
 
 - **Self-contained, no data files.** Like mksh, oksh has no module system and no
   autoloaded-function tree. It does use ncurses for terminal handling, so the
-  binary carries a curated terminfo fallback (`embedFallbackTerminfo`): the
-  command-line editor works with no `/usr/share/terminfo` on the host, and
-  `strace` shows zero `/nix/store` reads at runtime. macOS links only
+  binary carries a curated terminfo fallback: the command-line editor works on
+  a host with no `/usr/share/terminfo`, and the binary reads nothing from the
+  Nix store at runtime. macOS links only
   `libSystem` (`otool -L` confirms).
 
 - **Static linking, every target.** Linux is static-musl on every architecture.

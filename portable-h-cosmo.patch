@@ -1,0 +1,40 @@
+oksh's portable.h dispatches per OS and knows no cosmo, so cosmo falls through
+to BSD-flavored `#else` arms that reference constants it lacks (_PW_NAME_LEN :=
+MAXLOGNAME, undeclared). cosmo's libc is deliberately Linux/glibc-shaped, so
+enroll it in the existing __linux__ profile; that profile's <sys/types.h> also
+gives edit.c its `u_char`.
+
+The `#ifndef O_EXLOCK / #define O_EXLOCK 0` fallback misfires on cosmo, which
+declares O_EXLOCK as `extern const unsigned`, not a macro: the `#ifndef` cannot
+see it and the macro would turn the declaration into `extern const unsigned 0;`.
+Skip the fallback on cosmo.
+
+--- a/portable.h
++++ b/portable.h
+@@ -9,7 +9,7 @@
+  * Includes
+  */
+ 
+-#if defined(__linux__) || defined(__CYGWIN__) || defined(__midipix__)
++#if defined(__linux__) || defined(__COSMOPOLITAN__) || defined(__CYGWIN__) || defined(__midipix__)
+ #include <sys/file.h>
+ #include <sys/types.h>
+ 
+@@ -46,7 +46,7 @@
+ #define CHILD_MAX	80
+ #endif /* !CHILD_MAX */
+ 
+-#ifndef O_EXLOCK
++#if !defined(O_EXLOCK) && !defined(__COSMOPOLITAN__)
+ #define O_EXLOCK	0
+ #endif /* !O_EXLOCK */
+ 
+@@ -55,7 +55,7 @@
+ #endif /* !_PATH_BSHELL */
+ 
+ #ifndef _PW_NAME_LEN
+-#if defined(__linux__) || defined(__CYGWIN__) || defined(_AIX) || defined(__midipix__) || defined(__HAIKU__)
++#if defined(__linux__) || defined(__COSMOPOLITAN__) || defined(__CYGWIN__) || defined(_AIX) || defined(__midipix__) || defined(__HAIKU__)
+ #define _PW_NAME_LEN	LOGIN_NAME_MAX
+ #elif defined(__NetBSD__)
+ #define _PW_NAME_LEN	MAXLOGNAME

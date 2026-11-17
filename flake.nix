@@ -25,13 +25,6 @@
   #   - macOS (Mach-O, libSystem-only).
   #   - Windows (single PE .exe, built via Cosmopolitan): see cosmo.nix.
   outputs = { self, unpins-lib }:
-    let
-      # Fallback terminfo is baked centrally for every engine ncurses, linux +
-      # darwin (native-overlay/ncurses.nix), so p.ncurses already carries it.
-      okshBase = pkgs:
-        let p = pkgs.pkgsStatic;
-        in p.oksh.override { ncurses = p.ncurses; };
-    in
     unpins-lib.lib.mkStandaloneFlake {
       inherit self;
       name = "oksh";
@@ -49,7 +42,5 @@
       smokePattern = "unpins-smoke-ok";
 
       windowsBuild = import ./cosmo.nix { inherit unpins-lib; };
-
-      build = pkgs: okshBase pkgs;
     };
 }

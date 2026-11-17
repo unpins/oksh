@@ -1,6 +1,6 @@
 --- a/exec.c
 +++ b/exec.c
-@@ -1014,6 +1014,24 @@
+@@ -1014,6 +1014,25 @@
  		memcpy(xp, name, namelen);
  		if (search_access(Xstring(xs, xp), mode, errnop) == 0)
  			return Xclose(xs, xp + namelen);
@@ -10,8 +10,9 @@
 +		 * so "ls" resolves "ls.exe" (mirrors cmd/PowerShell PATHEXT).
 +		 * The buffer returned here is exactly what the caller hands
 +		 * to execve, so the ".exe" candidate must be the result.
++		 * Command lookups only: FPATH searches pass R_OK.
 +		 */
-+		if (errno == ENOENT &&
++		if (mode == X_OK && errno == ENOENT &&
 +		    !(namelen >= 5 &&
 +		      strcmp(name + (namelen - 1) - 4, ".exe") == 0)) {
 +			/* make room for ".exe" in place of the trailing NUL */

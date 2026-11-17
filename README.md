@@ -63,14 +63,9 @@ The [Releases](https://github.com/unpins/oksh/releases) page has standalone bina
 
 ## Build notes
 
-- **Self-contained, no data files.** Like mksh, oksh has no module system and no
-  autoloaded-function tree. It does use ncurses for terminal handling, so the
-  binary carries a curated terminfo fallback: the command-line editor works on
-  a host with no `/usr/share/terminfo`, and the binary reads nothing from the
-  Nix store at runtime. macOS links only
-  `libSystem` (`otool -L` confirms).
-
-- **Static linking, every target.** Linux is static-musl on every architecture.
+- **Clear screen without host terminfo.** oksh uses ncurses only to clear the
+  screen (Ctrl-L). The binary carries a set of built-in terminal descriptions,
+  so this works on a host with no `/usr/share/terminfo`.
 
 - **Windows via Cosmopolitan.** mingw can't host a Korn shell (no `fork`, job
   control, or POSIX signals), so the Windows binary goes through cosmo.

@@ -4,11 +4,8 @@
 # cannot provide. The cosmo cross stdenv auto-apelinks $out/bin/* (ELF -> PE32+,
 # rename to <name>.exe) in fixupPhase.
 #
-# oksh's configure is a hand-written probe script (not autoconf) that compiles
-# and *runs* a conftest. nixpkgs already neutralizes that for cross builds
-# (substituteInPlace configure --replace "./conftest" "echo"), and cosmo is a
-# cross stdenv, so the probe is skipped and configure falls back to its portable
-# defaults — which is exactly what we want on the cosmo target.
+# oksh's hand-written configure runs a conftest only in its compiler check, which
+# nixpkgs neutralizes for cross; the feature probes compile and link, so they work.
 { unpins-lib }:
 pkgs:
 let

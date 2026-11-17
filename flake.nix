@@ -11,11 +11,11 @@
   # oksh (the portable OpenBSD ksh, based on the Public Domain Korn Shell) as a
   # single self-contained static binary. Like mksh it has no module system, no
   # autoloaded function tree, and uses no NLS catalogs (no catgets segfault) —
-  # but unlike mksh it uses ncurses for terminal handling. The curated
-  # fallback-terminfo (so the line editor works with no host /usr/share/terminfo
-  # and keeps no /nix/store ref) is baked centrally into every engine ncurses by
-  # native-overlay/ncurses.nix, so pkgsStatic.ncurses already carries it — no
-  # per-package override here (same for tcsh/dash/nano).
+  # but unlike mksh it links ncurses, which it uses only to clear the screen
+  # (Ctrl-L). The curated fallback-terminfo (so that works with no host
+  # /usr/share/terminfo and keeps no /nix/store ref) is baked centrally into
+  # every engine ncurses by native-overlay/ncurses.nix, so pkgsStatic.ncurses
+  # already carries it — no per-package override here.
   #
   # The man-page embed and the Windows/Cosmopolitan build are handled by
   # mkStandaloneFlake and cosmo.nix respectively.
